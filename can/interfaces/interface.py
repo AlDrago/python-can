@@ -4,7 +4,7 @@ from can.util import load_config, choose_socketcan_implementation
 
 VALID_INTERFACES = set(['kvaser', 'serial', 'pcan', 'socketcan_native',
                         'socketcan_ctypes', 'socketcan', 'usb2can', 'ixxat',
-                        'virtual'])
+                        'virtual', 'wscan'])
 
 
 class Bus(object):
@@ -64,6 +64,9 @@ class Bus(object):
         elif interface == 'virtual':
             from can.interfaces.virtual import VirtualBus
             cls = VirtualBus
+        elif interface == 'wscan':
+            from can.interfaces.wscan import WSBus
+            cls = WSBus
         else:
             raise NotImplementedError("CAN interface '{}' not supported".format(interface))
 
