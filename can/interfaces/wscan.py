@@ -16,8 +16,7 @@ class WSBus(BusABC):
 
     def __init__(self, channel, *args, **kwargs):
         self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        self.socket = self.loop.run_until_complete(websockets.connect(kwargs['url']))
+        self.socket = self.loop.run_until_complete(websockets.connect(kwargs['url'], loop=self.loop, timeout=0))
 
     def recv(self, timeout=None):
         data = self.loop.run_until_complete(self.socket.recv())
@@ -39,3 +38,4 @@ class WSBus(BusABC):
 
     def shutdown(self):
         self.loop.run_until_complete(self.socket.close())
+        self.loop.close()
