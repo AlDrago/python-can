@@ -43,9 +43,12 @@ class WSBus(BusABC):
 
     def recv(self, timeout=None):
         future = asyncio.run_coroutine_threadsafe(self.recv_io(), self.loop)
-        data = future.result(timeout)
-        message = self.deserialize_message(data)
-        return message
+        try:
+            data = future.result(timeout)
+            message = self.deserialize_message(data)
+            return message
+        except asyncio.TimeoutError:
+            return None
 
     def send(self, message):
         message.timestamp = time.time()
